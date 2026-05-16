@@ -1,0 +1,58 @@
+---
+description: Go backend conventions for AI CFO
+globs: backend/**/*.go
+alwaysApply: false
+---
+
+# Backend (Go) Conventions
+
+## Determinism
+All financial math lives in `backend/internal/service/financial_logic.go` (or an industry module). Never route a calculation through the LLM.
+
+```go
+// BAD — asks the LLM to compute
+answer := llm.Ask(ctx, "What is the burn rate for Q1?")
+
+// GOOD — backend computes, LLM only explains
+burn := financial.BurnRate(company, period)     // deterministic
+answer := llm.Explain(ctx, ExplainInput{Metric: "burn_rate", Value: burn})
+```
+
+## Storage
+- **SQLite** (`internal/storage/sqlstore`) is the source of truth for
+  queryable state: companies, documents, line items, ask_audit. Driver is
+  `modernc.org/sqlite` (pure Go — no CGO).
+- Filesystem still holds blobs (uploaded files, parsed snapshots). All
+  paths go through `backend/internal/storage/paths.go` — never hand-join.
+- Vector storage goes through `service.Store`. Implementations today:
+  in-memory JSON (`service.NewInMemoryStore`) and Qdrant (`service.NewQdrantStore`).
+- Every write path uses a transaction (`db.BeginTx`). If it's not
+  transactional, it doesn't go into SQL.
+- Validate every user-derived path to prevent traversal (see `security_test.go`).
+
+## Period Resolution
+Use `backend/internal/service/period_parser.go`. "Q1", "FY24", "last quarter" must resolve in Go before any LLM call.
+
+## Errors
+Wrap with context: `fmt.Errorf("compute runway for %s: %w", company.ID, err)`.
+Return errors — don't log-and-swallow in library code. Log at the handler boundary.
+
+## Testing
+Every new public function in `service/` and `industry/` gets a table-driven test. Deterministic means testable — enforce it.
+
+## Structure
+- `internal/api/*`               — HTTP handlers only; no business logic
+- `internal/service/*`           — deterministic computation, RAG pipeline (hybrid / rerank / confidence / conflict), LLM adapter, vector store impls
+- `internal/industry/*`          — vertical-specific logic (see industry-modules rule)
+- `internal/model/*`             — data shapes; no I/O
+- `internal/storage/*`           — filesystem persistence, path safety
+- `internal/storage/sqlstore/*`  — SQLite source-of-truth (schema, CRUD, migrations)
+- `internal/config/*`            — config loading
+
+## No-Goes
+- No `panic` outside `main`.
+- No goroutines without a clear lifecycle + context cancellation.
+- No third-party deps for things stdlib handles (json, http, filepath).
+- No cloud SDKs. Ever.
+- No CGO in the default build (stay `modernc.org/sqlite`, not `mattn/go-sqlite3`).
+- No Postgres/MySQL/Mongo. Single-binary + SQLite stays the deployment story.

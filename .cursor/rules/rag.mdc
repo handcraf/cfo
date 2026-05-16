@@ -1,0 +1,75 @@
+---
+description: RAG layer — evidence only, never the decision-maker
+globs: backend/internal/service/rag*.go,backend/internal/service/embeddings*.go,backend/internal/service/vectorstore*.go,backend/internal/service/hybrid_*.go,backend/internal/service/reranker*.go,backend/internal/service/conflict_*.go,backend/internal/service/confidence*.go,backend/internal/service/qdrant_*.go
+alwaysApply: false
+---
+
+# RAG Rules
+
+RAG is an **evidence layer**, not a decision layer. It retrieves supporting chunks for the LLM's explanation. It must not influence which numbers are reported.
+
+## Hard Rules
+- RAG never picks documents for computation. That's `sqlstore` + `period_parser`.
+- RAG never computes metrics. Those come from `financial_logic.go` / industry modules.
+- Retrieval failures must **not** fail the user request — explanation can degrade gracefully.
+- Every retrieved chunk carries its source (`file`, `chunk_id`, `period`) for auditability.
+- Filters (industry, doc type, period) are **applied BEFORE retrieval**, never post-hoc.
+
+## Data Layout
+Sample chunks live under `backend/data/rag/<industry>/*.json`. Industry determines which category set to search — see `industry-modules` rule. Vector payloads live in Qdrant (when enabled) or the in-memory JSON store.
+
+## Retrieval Flow (production)
+```
+query
+  -> period_parser      resolves "Q1 2024" deterministically
+  -> financial_logic    computes SQL-backed numbers (the facts)
+  -> industry module    returns RAG categories + vocabulary + filter signals
+  -> HybridRetriever    semantic (vector) + keyword, filtered BEFORE search,
+                        fused with Reciprocal Rank Fusion (RRF)
+  -> Reranker           deterministic rerank (industry/doctype/period/source
+                        boosts + length penalty) → top-K
+  -> ConflictDetector   flags disagreeing numeric claims across evidence
+  -> Confidence         deterministic High/Medium/Low/Unknown
+  -> LLM explanation    prompt = { computed_facts, evidence_chunks,
+                                   vocabulary, confidence }
+  -> ask_audit          append-only row (question, numbers, evidence IDs,
+                        confidence, conflicts)
+```
+
+If confidence is `unknown` OR conflicts > 0 → skip the LLM entirely and
+return a structured "uncertain" response. Explain facts; don't invent them.
+
+## Embeddings
+- Local only. No OpenAI/Cohere/remote providers.
+- Cache embeddings on disk keyed by content hash — recomputing on every
+  request is wasteful and non-deterministic in timing.
+
+## Vector Store
+- Go through the `service.Store` interface. Never import a concrete
+  backend (in-memory, Qdrant) from handler code.
+- In-memory is the default (JSON persistence under `data/rag/*/vectors.json`).
+- Qdrant is opt-in via `VECTOR_BACKEND=qdrant` and the `qdrant`
+  docker-compose profile.
+- Keep `Store` narrow: `AddDocuments`, `Search(SearchQuery)`,
+  `DeleteByDocumentID`, `Count(filter)`, `Clear(filter)`, `Close`.
+
+## Confidence Scoring
+Deterministic function — no ML, no LLM. Inputs:
+- `HasSQLMetrics`, `SQLMetricCount`
+- `EvidenceCount`, `TopScore`
+- `AgreementRatio` (evidence referencing the same docs as the SQL facts)
+- `ConflictCount` (always caps at Low)
+- `PeriodMatched`
+
+Every score carries a `Reasons []string` audit trail.
+
+## Enhanced RAG (`rag_enhanced.go`)
+Treat it as an opt-in path. Keep the basic keyword RAG working as a
+fallback — the system must degrade gracefully when embeddings are
+unavailable or the vector store is unreachable.
+
+## Testing
+Every retrieval function gets a deterministic test with fixed
+embeddings/fixtures. Randomness in tests is a bug. RRF fusion,
+reranker, conflict detection, and confidence scoring each have their
+own unit test file under `backend/internal/service/`.

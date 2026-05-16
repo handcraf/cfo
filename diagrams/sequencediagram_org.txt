@@ -1,0 +1,270 @@
+# AI CFO - Sequence Diagrams for SequenceDiagram.org
+# Copy each diagram separately to https://sequencediagram.org
+
+# ============================================================
+# DIAGRAM 1: Application Startup Flow
+# ============================================================
+
+title Application Startup Flow
+
+participant User
+participant Browser
+participant "Frontend\n(React)" as Frontend
+participant "Backend\n(Go)" as Backend
+participant "File Storage" as Storage
+
+User->Browser: Open http://0.0.0.0:3000
+Browser->Frontend: Load React App
+Frontend->Backend: GET /company/status
+Backend->Storage: Read company.json
+Storage-->Backend: Company data (or null)
+Backend-->Frontend: {setup_completed: true/false}
+
+alt setup not completed
+    Frontend-->Browser: Show Setup Page
+else setup completed
+    Frontend-->Browser: Show Dashboard
+end
+
+# ============================================================
+# DIAGRAM 2: Company Setup Flow
+# ============================================================
+
+title Company Setup Flow
+
+participant User
+participant "Frontend\n(React)" as Frontend
+participant "Backend\n(Go)" as Backend
+participant "File Storage" as Storage
+
+User->Frontend: Enter company details
+User->Frontend: Click "Continue"
+Frontend->Backend: POST /setup/company\n{name, industry, currency}
+Backend->Backend: Validate request
+
+alt validation failed
+    Backend-->Frontend: 400 Bad Request
+    Frontend-->User: Show error
+else validation passed
+    Backend->Storage: Write company.json
+    Storage-->Backend: Success
+    Backend-->Frontend: 200 OK + Company
+    Frontend-->User: Redirect to Dashboard
+end
+
+# ============================================================
+# DIAGRAM 3: Document Upload Flow
+# ============================================================
+
+title Document Upload Flow
+
+participant User
+participant "Frontend\n(React)" as Frontend
+participant "Backend\n(Go)" as Backend
+participant "Parser" as Parser
+participant "File Storage" as Storage
+
+User->Frontend: Select file (CSV/PDF/XLSX)
+User->Frontend: Set doc_type, period
+User->Frontend: Click Upload
+Frontend->Backend: POST /documents/upload\n(multipart/form-data)
+Backend->Backend: Validate file type
+
+alt invalid file type
+    Backend-->Frontend: 400 Bad Request
+    Frontend-->User: Show error
+else valid file
+    Backend->Storage: Save raw file\n/data/documents/
+    Storage-->Backend: File path
+    Backend->Parser: Parse document
+    Parser->Parser: Extract metrics:\nRevenue, Expenses, Cash
+    Parser-->Backend: Parsed data
+    Backend->Storage: Save parsed JSON\n/data/parsed/
+    Backend->Storage: Update documents.json
+    Storage-->Backend: Success
+    Backend-->Frontend: 200 OK + Document
+    Frontend-->User: Show success
+end
+
+# ============================================================
+# DIAGRAM 4: Dashboard Metrics Flow
+# ============================================================
+
+title Dashboard Metrics Flow
+
+participant User
+participant "Frontend\n(React)" as Frontend
+participant "Backend\n(Go)" as Backend
+participant "Financial Logic" as FinLogic
+participant "File Storage" as Storage
+
+User->Frontend: View Dashboard
+Frontend->Backend: GET /metrics/current
+Backend->Storage: Load all parsed/*.json
+Storage-->Backend: Parsed documents
+
+Backend->FinLogic: CalculateCurrentMetrics()
+FinLogic->FinLogic: Aggregate latest data
+FinLogic->FinLogic: CalculateCash()
+FinLogic->FinLogic: CalculateMonthlyBurn()\nBurn = Expenses - Revenue
+FinLogic->FinLogic: CalculateRunway()\nRunway = Cash / Burn
+FinLogic->FinLogic: ComparePeriods()\nCalculate % changes
+FinLogic-->Backend: FinancialMetrics
+
+Backend-->Frontend: JSON metrics
+Frontend->Frontend: Render MetricCards
+Frontend-->User: Display Dashboard
+
+# ============================================================
+# DIAGRAM 5: Ask CFO Flow (Main Feature)
+# ============================================================
+
+title Ask CFO Flow (AI Explanation)
+
+participant User
+participant "Frontend\n(React)" as Frontend
+participant "Backend\n(Go)" as Backend
+participant "Financial Logic" as FinLogic
+participant "RAG Service" as RAG
+participant "Ollama LLM" as LLM
+participant "File Storage" as Storage
+
+User->Frontend: Enter question
+User->Frontend: Click Submit
+Frontend->Backend: POST /ask\n{question: "What is cash?"}
+
+note over Backend: Step 1: Calculate metrics (CODE, not LLM)
+Backend->FinLogic: CalculateCurrentMetrics()
+FinLogic->Storage: Load parsed documents
+Storage-->FinLogic: Document data
+FinLogic->FinLogic: Calculate all metrics
+FinLogic-->Backend: Metrics (cash, burn, runway)
+
+note over Backend: Step 2: RAG retrieval
+Backend->RAG: Search(question)
+RAG->Storage: Load parsed documents
+RAG->RAG: Extract keywords
+RAG->RAG: Score & rank documents
+RAG-->Backend: Context + Source IDs
+
+note over Backend: Step 3: Format for LLM
+Backend->FinLogic: FormatMetricsForPrompt()
+FinLogic-->Backend: ["Cash: $500K", "Burn: $50K"]
+
+note over Backend: Step 4: LLM explains (does NOT calculate)
+Backend->LLM: POST /api/generate\nPrompt with numbers + context
+LLM->LLM: Generate explanation
+LLM-->Backend: Response
+
+note over Backend: Step 5: Parse and return
+Backend->Backend: Parse SUMMARY/EXPLANATION
+Backend-->Frontend: AskResponse\n{summary, numbers, explanation}
+
+Frontend->Frontend: Render answer
+Frontend-->User: Display AI CFO response
+
+# ============================================================
+# DIAGRAM 6: Error Handling Flow
+# ============================================================
+
+title Error Handling - LLM Unavailable
+
+participant User
+participant "Frontend\n(React)" as Frontend
+participant "Backend\n(Go)" as Backend
+participant "Financial Logic" as FinLogic
+participant "Ollama LLM" as LLM
+
+User->Frontend: Ask question
+Frontend->Backend: POST /ask
+
+Backend->FinLogic: CalculateCurrentMetrics()
+FinLogic-->Backend: Metrics calculated
+
+Backend->LLM: POST /api/generate
+
+alt LLM available
+    LLM-->Backend: Explanation
+    Backend-->Frontend: Full response
+    Frontend-->User: Show answer + explanation
+else LLM not available
+    LLM-->Backend: Connection refused
+    Backend-->Frontend: {numbers_used: [...], error: "LLM unavailable"}
+    Frontend-->User: Show numbers without explanation
+end
+
+note over User: Numbers are always calculated by code,\nnever by LLM
+
+# ============================================================
+# DIAGRAM 7: Data Persistence Flow
+# ============================================================
+
+title Data Persistence - File Storage
+
+participant "Backend\n(Go)" as Backend
+participant FileStore
+participant "File System" as Disk
+
+note over Backend,Disk: Save Company
+Backend->FileStore: SaveCompany(company)
+FileStore->FileStore: Set UpdatedAt = now
+FileStore->Disk: Write\n/data/state/company.json
+Disk-->FileStore: Success
+FileStore-->Backend: nil
+
+note over Backend,Disk: Save Document Metadata  
+Backend->FileStore: SaveDocumentList(docs)
+FileStore->Disk: Write\n/data/state/documents.json
+Disk-->FileStore: Success
+
+note over Backend,Disk: Save Parsed Document
+Backend->FileStore: SaveParsedDocument(parsed)
+FileStore->Disk: Write\n/data/parsed/{docID}.json
+Disk-->FileStore: Success
+
+note over Backend,Disk: Load All Parsed Documents
+Backend->FileStore: LoadAllParsedDocuments()
+FileStore->Disk: ReadDir /data/parsed/
+Disk-->FileStore: List of .json files
+loop each file
+    FileStore->Disk: Read file
+    Disk-->FileStore: JSON content
+end
+FileStore-->Backend: []*ParsedDocument
+
+# ============================================================
+# DIAGRAM 8: Docker Deployment
+# ============================================================
+
+title Docker Compose Deployment
+
+participant Developer
+participant "Docker\nCompose" as Docker
+participant "Ollama" as Ollama
+participant "Backend\n(Go)" as Backend
+participant "Frontend\n(nginx)" as Frontend
+
+Developer->Docker: docker compose up --build
+
+Docker->Ollama: Start ollama service
+Ollama-->Docker: Ready on :11434
+
+Docker->Backend: Build Go binary
+Docker->Backend: Start backend
+Backend->Backend: Init /app/data
+Backend-->Docker: Ready on :8080
+
+Docker->Frontend: Build React app
+Docker->Frontend: Start nginx
+Frontend-->Docker: Ready on :3000
+
+note over Docker: All services running
+
+Developer->Ollama: ollama pull llama3
+Ollama->Ollama: Download model (~4.6GB)
+Ollama-->Developer: Model ready
+
+Developer->Frontend: Open http://0.0.0.0:3000
+Frontend->Backend: API via /api proxy
+Backend->Ollama: LLM requests
+

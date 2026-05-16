@@ -1,0 +1,38 @@
+Metric,Amount,Notes
+Revenue,45000000,Annual manufacturing revenue
+Domestic Sales,32000000,US market
+International Sales,13000000,Export revenue
+Cost of Goods Sold,27000000,60% COGS ratio
+Direct Materials,15000000,Raw materials
+Direct Labor,8000000,Production wages
+Manufacturing Overhead,4000000,Factory costs
+Gross Profit,18000000,40% gross margin
+Operating Expenses,11000000,Total OpEx
+Selling Expenses,3500000,Sales team and distribution
+Administrative Expenses,2500000,Corporate overhead
+Research and Development,2000000,Product innovation
+Depreciation,3000000,Equipment depreciation
+Operating Income,7000000,EBIT
+Interest Expense,800000,Bank loans
+Other Expenses,200000,Misc expenses
+Income Before Tax,6000000,Pre-tax income
+Income Tax,1500000,25% tax rate
+Net Income,4500000,Annual profit
+Cash,8500000,Cash on hand
+Accounts Receivable,6200000,Trade receivables
+Inventory,9800000,Raw and finished goods
+Raw Materials Inventory,4200000,Materials stock
+Work in Progress,2100000,Production WIP
+Finished Goods,3500000,Ready for sale
+Total Current Assets,24500000,Working capital
+Property Plant Equipment,42000000,Manufacturing assets
+Accumulated Depreciation,-18000000,Cumulative depreciation
+Net Fixed Assets,24000000,Net PPE
+Total Assets,48500000,All assets
+Accounts Payable,5200000,Trade payables
+Short Term Loans,3000000,Working capital loans
+Total Current Liabilities,8200000,Short term obligations
+Long Term Debt,12000000,Equipment financing
+Total Liabilities,20200000,All liabilities
+Shareholders Equity,28300000,Owner equity
+

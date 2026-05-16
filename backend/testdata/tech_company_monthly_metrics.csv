@@ -1,0 +1,24 @@
+Metric,January,February,March,Q1_Total,Category
+Revenue,2800000,2950000,3200000,8950000,Income
+Product Revenue,2100000,2200000,2400000,6700000,Income
+Services Revenue,700000,750000,800000,2250000,Income
+Cost of Revenue,980000,1032500,1120000,3132500,Expense
+Gross Profit,1820000,1917500,2080000,5817500,Income
+Operating Expenses,1400000,1450000,1500000,4350000,Expense
+EBITDA,520000,567500,680000,1767500,Income
+Depreciation,80000,80000,80000,240000,Expense
+EBIT,440000,487500,600000,1527500,Income
+Interest Expense,25000,25000,25000,75000,Expense
+Net Income Before Tax,415000,462500,575000,1452500,Income
+Tax Expense,103750,115625,143750,363125,Expense
+Net Income,311250,346875,431250,1089375,Income
+Cash Balance,5200000,5400000,5750000,5750000,Balance Sheet
+Accounts Receivable,1800000,1900000,2100000,2100000,Balance Sheet
+Accounts Payable,600000,620000,650000,650000,Balance Sheet
+Monthly Burn Rate,0,0,0,0,Metrics
+Runway Months,Profitable,Profitable,Profitable,Profitable,Metrics
+Customer Count,1250,1320,1410,1410,Metrics
+Monthly Recurring Revenue,2100000,2200000,2400000,2400000,Metrics
+Customer Churn Rate,2.1,1.9,1.8,1.93,Metrics
+Net Revenue Retention,115,118,120,117.67,Metrics
+

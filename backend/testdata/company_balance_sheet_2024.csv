@@ -1,0 +1,22 @@
+Metric,Value,Notes
+Cash,1500000,Cash and cash equivalents
+Accounts Receivable,450000,Customer outstanding payments
+Inventory,300000,Raw materials and finished goods
+Prepaid Expenses,75000,Insurance and rent prepaid
+Total Current Assets,2325000,Liquid assets
+Property Plant Equipment,800000,Office and equipment
+Accumulated Depreciation,-165000,Total depreciation
+Intangible Assets,200000,Patents and trademarks
+Long Term Investments,150000,Strategic investments
+Total Assets,3310000,All company assets
+Accounts Payable,280000,Vendor payments due
+Accrued Expenses,120000,Salaries and utilities
+Short Term Debt,200000,Line of credit
+Total Current Liabilities,600000,Due within 1 year
+Long Term Debt,500000,Bank loan
+Total Liabilities,1100000,All obligations
+Common Stock,500000,Equity invested
+Retained Earnings,1710000,Accumulated profits
+Total Equity,2210000,Shareholder value
+Total Liabilities and Equity,3310000,Must equal Total Assets
+

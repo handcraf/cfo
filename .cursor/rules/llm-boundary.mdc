@@ -1,0 +1,80 @@
+---
+description: LLM adapter boundary — explanation only, never computation
+globs: backend/internal/service/llm*.go,backend/internal/api/ask.go
+alwaysApply: false
+---
+
+# LLM Boundary
+
+The LLM is a **narrator**, not an analyst. It receives pre-computed facts and turns them into prose. Nothing more.
+
+## Inputs the LLM May Receive
+- Computed metrics (value + unit + period)
+- Retrieved RAG chunks (as supporting evidence)
+- Industry vocabulary (to shape tone/terminology)
+- The user's question (for framing the explanation)
+
+## Inputs the LLM Must NEVER Receive
+- Raw financial documents it's expected to "figure out"
+- A question it's expected to answer without pre-computed facts
+- Freedom to choose which period, document, or metric applies
+
+## Prompt Shape
+```go
+type ExplainInput struct {
+    Question    string
+    Industry    string
+    Period      string          // already resolved by backend
+    Metrics     []MetricValue   // already computed
+    Evidence    []RagChunk      // already retrieved
+    Vocabulary  []string        // from industry module
+}
+```
+
+The prompt template must instruct the model:
+- "Explain the numbers below. Do not compute new ones."
+- "If a value is missing, say it is not available — do not estimate."
+- "Cite evidence chunks by id when used."
+
+## Local Only
+The runtime is a locally built `llama.cpp` binary invoking a Gemma GGUF
+model file (`MODEL_PATH`). No HTTP daemon, no remote endpoints, no API
+keys in config. See `run.md` for setup.
+
+- Sampling is deterministic: `temp=0.2`, `top_p=0.9`, fixed `seed=42`.
+  Changes to these defaults require an explicit review — the ask-audit
+  log relies on reproducibility.
+- The LLM runtime is invoked via `exec.Command` with the prompt passed
+  through `-f <tempfile>` (never via `-p` on the command line), to keep
+  long prompts with newlines/quotes safe from shell escaping.
+- Timeouts are hard wall-clock (default `LLM_TIMEOUT_SEC=120`); on
+  expiry the process is killed and the fallback copy is returned.
+
+## Failure Mode
+If the llama.cpp runtime fails (binary missing, model missing, timeout,
+non-zero exit), `ask.go` MUST still return the **computed facts**,
+`confidence`, `conflicts`, and `evidence`. The user-visible copy is:
+
+> "Unable to generate explanation. Please try again."
+
+Never retry in a loop — a single failure surfaces as a fallback
+response; upstream is expected to retry if needed.
+
+## Short-Circuit on Low Trust
+If `confidence.Level == unknown` OR the conflict detector returned any
+conflicts, `ask.go` MUST skip the LLM call entirely and return a
+structured "uncertain" response with the evidence and conflicts attached.
+A pretty explanation of untrustworthy numbers is worse than no
+explanation at all.
+
+## Anti-Patterns
+```go
+// BAD — asking the model to do math
+prompt := fmt.Sprintf("Given these statements, what is the runway?\n%s", docs)
+
+// GOOD — model only narrates
+prompt := renderExplainTemplate(ExplainInput{
+    Metrics: []MetricValue{{Name: "runway_months", Value: 7.4, Period: "Q1-FY25"}},
+    ...
+})
+```

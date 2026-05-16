@@ -1,0 +1,41 @@
+---
+description: Plug-and-play industry module contract (Education, E-commerce, Pharma, Generic)
+globs: backend/internal/industry/**/*.go
+alwaysApply: false
+---
+
+# Industry Modules
+
+Each vertical (`education.go`, `ecommerce.go`, `pharma.go`, generic fallback) is a self-contained module registered in `registry.go`. Adding a new vertical must not require edits outside `internal/industry/` and the registry.
+
+## Required Capabilities per Module
+Every industry module must expose:
+
+1. **Intent mapping** — map user query → supported domain intent
+2. **Metrics** — vertical-specific deterministic calculations
+3. **RAG categories** — which chunk categories to retrieve for this vertical
+4. **Vocabulary** — domain terms injected into the LLM *explanation* prompt (never into computation)
+
+## Vertical Examples
+- **Education:** centre-wise P&L, teacher performance, batch profitability
+- **E-commerce:** SKU profitability, logistics cost, CAC vs LTV
+- **Pharma:** batch cost tracking, compliance expense, R&D allocation
+- **Generic:** cash, burn, runway, P&L fallbacks
+
+## Registry Contract
+`registry.go` resolves a company's industry → module. The resolver must:
+- Default to **Generic** when industry is unknown — never fail the request.
+- Be pure/deterministic: same company → same module.
+- Not call the LLM.
+
+## Adding a New Industry
+1. Add `myindustry.go` implementing the module interface.
+2. Register it in `registry.go`.
+3. Add a table-driven test in `registry_test.go`.
+4. Add sample RAG chunks under `backend/data/rag/<industry>/`.
+5. No changes needed in `api/`, `service/llm*`, or `service/rag*`.
+
+## Boundaries
+- Industry modules **compute** — they never prompt the LLM directly.
+- Industry-specific vocabulary is returned as data; the LLM adapter injects it into the explanation prompt.
+- Keep each module file under ~300 lines; split by concern if it grows.

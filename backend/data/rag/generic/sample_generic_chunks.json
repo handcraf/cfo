@@ -1,0 +1,59 @@
+{
+  "_comment": "Sample JSON metadata for generic (default) industry RAG chunks",
+  "_description": "This file demonstrates the expected structure for standard financial document chunks",
+  "_todo": "Implement actual document chunking and storage in document_parser.go",
+  
+  "document_id": "generic_sample_001",
+  "industry_type": "generic",
+  "source_file": "q4_2024_financial_report.csv",
+  "parsed_at": "2024-12-31T10:00:00Z",
+  
+  "metadata": {
+    "report_type": "quarterly",
+    "fiscal_quarter": "Q4",
+    "fiscal_year": "2024"
+  },
+  
+  "chunks": [
+    {
+      "chunk_id": "gen_001_chunk_001",
+      "document_id": "generic_sample_001",
+      "text": "Q4 2024 Revenue Summary: Total revenue: $25M. Operating expenses: $18M. Net income: $5.2M. EBITDA: $7M.",
+      "chunk_type": "income_summary",
+      "relevance_keywords": ["revenue", "income", "expenses", "ebitda", "profit"],
+      "metrics": {
+        "total_revenue": 25000000,
+        "operating_expenses": 18000000,
+        "net_income": 5200000,
+        "ebitda": 7000000
+      }
+    },
+    {
+      "chunk_id": "gen_001_chunk_002",
+      "document_id": "generic_sample_001",
+      "text": "Balance Sheet: Total assets: $100M. Total liabilities: $40M. Shareholders equity: $60M. Current ratio: 2.5.",
+      "chunk_type": "balance_sheet",
+      "relevance_keywords": ["assets", "liabilities", "equity", "balance", "current ratio"],
+      "metrics": {
+        "total_assets": 100000000,
+        "total_liabilities": 40000000,
+        "shareholders_equity": 60000000,
+        "current_ratio": 2.5
+      }
+    },
+    {
+      "chunk_id": "gen_001_chunk_003",
+      "document_id": "generic_sample_001",
+      "text": "Cash Flow: Operating cash flow: $8M. Investing activities: -$3M. Financing activities: -$2M. Free cash flow: $5M.",
+      "chunk_type": "cash_flow",
+      "relevance_keywords": ["cash", "flow", "operating", "investing", "financing"],
+      "metrics": {
+        "operating_cash_flow": 8000000,
+        "investing_activities": -3000000,
+        "financing_activities": -2000000,
+        "free_cash_flow": 5000000
+      }
+    }
+  ]
+}
+

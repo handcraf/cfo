@@ -1,0 +1,91 @@
+{
+  "_comment": "Sample JSON metadata for pharmaceutical industry RAG chunks",
+  "_description": "This file demonstrates the expected structure for pharma-specific document chunks",
+  "_todo": "Implement actual document chunking and storage in document_parser.go",
+  
+  "document_id": "pharma_sample_001",
+  "industry_type": "pharma",
+  "source_file": "rd_portfolio_report_2024.csv",
+  "parsed_at": "2024-12-31T10:00:00Z",
+  
+  "metadata": {
+    "company_type": "biotech",
+    "therapeutic_areas": ["oncology", "immunology", "neurology"],
+    "pipeline_stage": "phase2_focused",
+    "fiscal_year": 2024
+  },
+  
+  "chunks": [
+    {
+      "chunk_id": "pharma_001_chunk_001",
+      "document_id": "pharma_sample_001",
+      "text": "R&D Expenditure FY2024: Total R&D spend: $450M (22% of revenue). Pre-clinical: $80M. Phase I: $50M. Phase II: $120M. Phase III: $200M.",
+      "chunk_type": "rd_expenditure",
+      "relevance_keywords": ["r&d", "research", "development", "spend", "investment"],
+      "metrics": {
+        "total_rd_spend": 450000000,
+        "rd_intensity": 0.22,
+        "preclinical_spend": 80000000,
+        "phase1_spend": 50000000,
+        "phase2_spend": 120000000,
+        "phase3_spend": 200000000
+      }
+    },
+    {
+      "chunk_id": "pharma_001_chunk_002",
+      "document_id": "pharma_sample_001",
+      "text": "Clinical Pipeline Status: Total candidates: 12. Pre-clinical: 4. Phase I: 3. Phase II: 3. Phase III: 2. Probability-weighted NPV: $2.8B.",
+      "chunk_type": "pipeline_status",
+      "relevance_keywords": ["pipeline", "clinical", "candidate", "phase", "trial"],
+      "metrics": {
+        "total_candidates": 12,
+        "preclinical_candidates": 4,
+        "phase1_candidates": 3,
+        "phase2_candidates": 3,
+        "phase3_candidates": 2,
+        "pipeline_npv": 2800000000
+      }
+    },
+    {
+      "chunk_id": "pharma_001_chunk_003",
+      "document_id": "pharma_sample_001",
+      "text": "Drug Revenue by Product: Total drug revenue: $2.05B. Drug A (oncology): $800M. Drug B (immunology): $650M. Drug C (neurology): $400M. Others: $200M.",
+      "chunk_type": "drug_revenue",
+      "relevance_keywords": ["drug", "revenue", "sales", "product", "therapy"],
+      "metrics": {
+        "total_drug_revenue": 2050000000,
+        "drug_a_revenue": 800000000,
+        "drug_b_revenue": 650000000,
+        "drug_c_revenue": 400000000,
+        "other_revenue": 200000000
+      }
+    },
+    {
+      "chunk_id": "pharma_001_chunk_004",
+      "document_id": "pharma_sample_001",
+      "text": "Patent & IP Status: Active patents: 45. Patents expiring 2025-2027: 8 (covering $600M revenue). New patent filings 2024: 12.",
+      "chunk_type": "patent_status",
+      "relevance_keywords": ["patent", "ip", "intellectual property", "expiry", "exclusivity"],
+      "metrics": {
+        "active_patents": 45,
+        "expiring_patents_3yr": 8,
+        "revenue_at_risk": 600000000,
+        "new_filings": 12
+      }
+    },
+    {
+      "chunk_id": "pharma_001_chunk_005",
+      "document_id": "pharma_sample_001",
+      "text": "Regulatory Submissions: FDA NDAs submitted: 2. EMA submissions: 2. Priority review designations: 1. Expected approvals 2025: 2.",
+      "chunk_type": "regulatory_status",
+      "relevance_keywords": ["fda", "ema", "regulatory", "approval", "nda", "submission"],
+      "metrics": {
+        "fda_submissions": 2,
+        "ema_submissions": 2,
+        "priority_reviews": 1,
+        "expected_approvals_2025": 2
+      }
+    }
+  ]
+}
+

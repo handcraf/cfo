@@ -1,0 +1,73 @@
+{
+  "_comment": "Sample JSON metadata for education industry RAG chunks",
+  "_description": "This file demonstrates the expected structure for education-specific document chunks",
+  "_todo": "Implement actual document chunking and storage in document_parser.go",
+  
+  "document_id": "edu_sample_001",
+  "industry_type": "education",
+  "source_file": "enrollment_report_q4_2024.csv",
+  "parsed_at": "2024-12-31T10:00:00Z",
+  
+  "metadata": {
+    "institution_type": "university",
+    "academic_year": "2024-2025",
+    "term": "fall",
+    "total_students": 15000,
+    "programs_count": 45
+  },
+  
+  "chunks": [
+    {
+      "chunk_id": "edu_001_chunk_001",
+      "document_id": "edu_sample_001",
+      "text": "Fall 2024 Enrollment Summary: Total enrolled students: 15,000 (up 5% YoY). Undergraduate: 12,000. Graduate: 3,000. New freshman class: 3,500.",
+      "chunk_type": "enrollment_summary",
+      "relevance_keywords": ["enrollment", "students", "undergraduate", "graduate", "freshman"],
+      "metrics": {
+        "total_students": 15000,
+        "undergraduate": 12000,
+        "graduate": 3000,
+        "yoy_growth": 0.05
+      }
+    },
+    {
+      "chunk_id": "edu_001_chunk_002",
+      "document_id": "edu_sample_001",
+      "text": "Retention Rate: 87% overall (industry benchmark: 81%). First-year retention: 92%. Graduation rate (6-year): 78%.",
+      "chunk_type": "retention_metrics",
+      "relevance_keywords": ["retention", "graduation", "dropout", "completion"],
+      "metrics": {
+        "overall_retention_rate": 0.87,
+        "first_year_retention": 0.92,
+        "graduation_rate_6yr": 0.78
+      }
+    },
+    {
+      "chunk_id": "edu_001_chunk_003",
+      "document_id": "edu_sample_001",
+      "text": "Tuition Revenue: $180M for Fall 2024. Average tuition per student: $12,000. Fee collection rate: 94%. Outstanding receivables: $10.8M.",
+      "chunk_type": "tuition_revenue",
+      "relevance_keywords": ["tuition", "revenue", "fees", "collection", "receivables"],
+      "metrics": {
+        "total_tuition_revenue": 180000000,
+        "avg_tuition_per_student": 12000,
+        "collection_rate": 0.94,
+        "outstanding_receivables": 10800000
+      }
+    },
+    {
+      "chunk_id": "edu_001_chunk_004",
+      "document_id": "edu_sample_001",
+      "text": "Faculty Costs: Total faculty expenses: $95M. Full-time faculty: 800. Part-time/adjunct: 350. Student-faculty ratio: 15:1.",
+      "chunk_type": "faculty_costs",
+      "relevance_keywords": ["faculty", "teacher", "professor", "salary", "staff"],
+      "metrics": {
+        "total_faculty_expenses": 95000000,
+        "full_time_faculty": 800,
+        "part_time_faculty": 350,
+        "student_faculty_ratio": 15
+      }
+    }
+  ]
+}
+

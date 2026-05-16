@@ -1,0 +1,84 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+frontend/dist/
+backend/server
+
+# Data files (keep structure, ignore content)
+backend/data/documents/*
+!backend/data/documents/.gitkeep
+backend/data/parsed/*
+!backend/data/parsed/.gitkeep
+backend/data/state/*
+!backend/data/state/.gitkeep
+
+# Environment files with secrets
+*.env
+.env.*
+
+# Vendor private key — NEVER commit. The matching public key
+# (config/license_pubkey.pem + backend/internal/license/pubkey_embed.pem)
+# IS committed because it ships embedded in the customer binary.
+config/license_privkey.pem
+
+# Generated CLI binaries (rebuild from source)
+backend/license-gen
+backend/cfo-license
+
+# Sample / per-host license artifacts (must be regenerated per install)
+license.lic
+*.state.enc
+migration.dat
+migration_pub.key
+request.dat
+
+# Release pipeline output (recreated by scripts/release.sh)
+dist/
+build/
+target/
+*.gguf
+*.bin
+*.pt
+*.pth
+*.ckpt
+venv/
+.venv/
+__pycache__/
+*.log
+*.zip
+*.mp4
+*.iso
+*.exe
+.env
+# Per-customer license records (private vendor repo, not this one)
+customers/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker
+.docker/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+

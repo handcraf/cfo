@@ -1,0 +1,87 @@
+{
+  "_comment": "Sample JSON metadata for e-commerce industry RAG chunks",
+  "_description": "This file demonstrates the expected structure for ecommerce-specific document chunks",
+  "_todo": "Implement actual document chunking and storage in document_parser.go",
+  
+  "document_id": "ecom_sample_001",
+  "industry_type": "ecommerce",
+  "source_file": "sales_report_q4_2024.csv",
+  "parsed_at": "2024-12-31T10:00:00Z",
+  
+  "metadata": {
+    "business_type": "D2C",
+    "platform": "shopify",
+    "product_categories": ["apparel", "accessories"],
+    "markets": ["US", "UK", "EU"]
+  },
+  
+  "chunks": [
+    {
+      "chunk_id": "ecom_001_chunk_001",
+      "document_id": "ecom_sample_001",
+      "text": "Q4 2024 GMV Summary: Gross Merchandise Value: $12.5M (up 25% YoY). Net Merchandise Value (after returns): $11.2M. Return rate: 10.4%.",
+      "chunk_type": "gmv_summary",
+      "relevance_keywords": ["gmv", "merchandise", "sales", "revenue", "returns"],
+      "metrics": {
+        "gmv": 12500000,
+        "nmv": 11200000,
+        "return_rate": 0.104,
+        "yoy_growth": 0.25
+      }
+    },
+    {
+      "chunk_id": "ecom_001_chunk_002",
+      "document_id": "ecom_sample_001",
+      "text": "Order Metrics: Total orders: 125,000. Average Order Value (AOV): $100. Repeat purchase rate: 35%. Orders per customer: 1.8.",
+      "chunk_type": "order_metrics",
+      "relevance_keywords": ["orders", "aov", "average order value", "repeat", "purchase"],
+      "metrics": {
+        "total_orders": 125000,
+        "aov": 100,
+        "repeat_purchase_rate": 0.35,
+        "orders_per_customer": 1.8
+      }
+    },
+    {
+      "chunk_id": "ecom_001_chunk_003",
+      "document_id": "ecom_sample_001",
+      "text": "Conversion Funnel: Site visitors: 2.5M. Add-to-cart rate: 8%. Cart abandonment: 70%. Checkout completion: 65%. Overall conversion: 5%.",
+      "chunk_type": "conversion_metrics",
+      "relevance_keywords": ["conversion", "funnel", "cart", "checkout", "abandonment"],
+      "metrics": {
+        "site_visitors": 2500000,
+        "add_to_cart_rate": 0.08,
+        "cart_abandonment_rate": 0.70,
+        "checkout_completion_rate": 0.65,
+        "conversion_rate": 0.05
+      }
+    },
+    {
+      "chunk_id": "ecom_001_chunk_004",
+      "document_id": "ecom_sample_001",
+      "text": "Customer Acquisition: New customers: 70,000. CAC (Customer Acquisition Cost): $25. LTV (Lifetime Value): $180. LTV:CAC ratio: 7.2:1.",
+      "chunk_type": "customer_acquisition",
+      "relevance_keywords": ["cac", "ltv", "acquisition", "customer", "lifetime value"],
+      "metrics": {
+        "new_customers": 70000,
+        "cac": 25,
+        "ltv": 180,
+        "ltv_cac_ratio": 7.2
+      }
+    },
+    {
+      "chunk_id": "ecom_001_chunk_005",
+      "document_id": "ecom_sample_001",
+      "text": "Inventory & Fulfillment: Active SKUs: 2,500. Inventory turnover: 6x/year. Avg days in stock: 45. Fulfillment cost per order: $4.50.",
+      "chunk_type": "inventory_fulfillment",
+      "relevance_keywords": ["inventory", "sku", "fulfillment", "stock", "shipping"],
+      "metrics": {
+        "active_skus": 2500,
+        "inventory_turnover": 6,
+        "avg_days_in_stock": 45,
+        "fulfillment_cost_per_order": 4.50
+      }
+    }
+  ]
+}
+

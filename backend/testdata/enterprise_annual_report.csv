@@ -1,0 +1,40 @@
+Metric,Amount,Year,Category
+Revenue,156000000,2024,Income Statement
+Revenue,132000000,2023,Income Statement
+Revenue Growth Rate,18.2,2024,Income Statement
+Cost of Revenue,62400000,2024,Income Statement
+Gross Profit,93600000,2024,Income Statement
+Gross Margin Percent,60,2024,Income Statement
+Research and Development,18720000,2024,Income Statement
+Sales and Marketing,23400000,2024,Income Statement
+General and Administrative,9360000,2024,Income Statement
+Total Operating Expenses,51480000,2024,Income Statement
+Operating Income,42120000,2024,Income Statement
+Operating Margin Percent,27,2024,Income Statement
+Interest Income,1200000,2024,Income Statement
+Interest Expense,3600000,2024,Income Statement
+Other Income,500000,2024,Income Statement
+Income Before Tax,40220000,2024,Income Statement
+Income Tax Expense,10055000,2024,Income Statement
+Net Income,30165000,2024,Income Statement
+Earnings Per Share,4.52,2024,Income Statement
+Cash and Equivalents,45000000,2024,Balance Sheet
+Short Term Investments,25000000,2024,Balance Sheet
+Accounts Receivable,28000000,2024,Balance Sheet
+Inventory,12000000,2024,Balance Sheet
+Total Current Assets,110000000,2024,Balance Sheet
+Property Plant Equipment,85000000,2024,Balance Sheet
+Goodwill and Intangibles,42000000,2024,Balance Sheet
+Total Assets,237000000,2024,Balance Sheet
+Accounts Payable,15000000,2024,Balance Sheet
+Short Term Debt,8000000,2024,Balance Sheet
+Total Current Liabilities,35000000,2024,Balance Sheet
+Long Term Debt,52000000,2024,Balance Sheet
+Total Liabilities,87000000,2024,Balance Sheet
+Total Equity,150000000,2024,Balance Sheet
+Cash from Operations,38000000,2024,Cash Flow
+Capital Expenditures,-12000000,2024,Cash Flow
+Free Cash Flow,26000000,2024,Cash Flow
+Dividends Paid,-8000000,2024,Cash Flow
+Stock Buybacks,-15000000,2024,Cash Flow
+

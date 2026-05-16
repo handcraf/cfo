@@ -1,0 +1,70 @@
+---
+description: Foundational AI CFO platform principles — always apply
+alwaysApply: true
+---
+
+# AI CFO — Core Principles
+
+## Product
+On-prem, offline AI CFO platform. Analyzes financial documents (P&L, Balance Sheet, etc.) and answers business-critical questions. Data never leaves the box.
+
+**Stack:** Go backend · React frontend · local LLM via llama.cpp binary + Gemma GGUF (no Ollama) · SQLite source-of-truth · optional Qdrant for vectors · Docker on-prem.
+
+**Storage (updated):**
+- **SQLite** (pure-Go, single file) is the source of truth for companies,
+  documents metadata, parsed financial line items, and the append-only
+  ask-audit log.
+- **Qdrant** is the vector store — OPTIONAL, behind the docker-compose
+  profile `qdrant`. In-memory JSON vectors are the default.
+- Legacy per-document JSON files under `backend/data/` still carry blob
+  payloads (uploaded files, parsed snapshots). SQLite is authoritative
+  for anything that can be queried.
+
+## The One Rule
+> **Backend decides facts. LLM explains facts.**
+
+### LLM must NEVER:
+- Calculate financial metrics
+- Choose which documents to use
+- Infer or fabricate missing data
+- Resolve time periods (Q1, FY, etc.)
+
+### Backend MUST:
+- Resolve time periods deterministically
+- Select the correct documents
+- Perform every calculation in code
+- Be auditable and debuggable
+
+### RAG is:
+- A supporting evidence layer — never the decision-maker
+- Retrieval only; computation stays in `financial_logic.go`
+- Hybrid (semantic + keyword, RRF-fused) and deterministically re-ranked.
+- Filters (industry, doc type, period) are applied BEFORE retrieval.
+
+### Every /ask response MUST carry:
+- `confidence` (high / medium / low / unknown), deterministic, auditable
+- `conflicts` (disagreeing numeric claims; forces Low when present)
+- `evidence` (the exact top-K chunks shown to the LLM)
+
+## Offline Constraint
+No external APIs, no cloud SDKs, no telemetry. If you're tempted to add one, stop and flag it.
+
+## Product Direction
+Evolving from "Generic AI CFO" → **Industry-Specific Financial Intelligence Platform**.
+Initial verticals: Education, E-commerce, Pharma, Generic fallback. Architecture must stay plug-and-play via `backend/internal/industry/` modules.
+
+## Engineering Posture
+- Simple, modular, extensible. No magic abstractions.
+- SQLite is fine and expected. Postgres/MySQL are NOT — we stay
+  single-binary-plus-file.
+- Vector storage goes through the `service.Store` interface. Never
+  import a concrete backend (Qdrant, in-memory) from handler code.
+- Add a TODO rather than guess complex logic.
+- Clarity over cleverness. Deterministic over clever.
+
+## Before You Answer
+1. Is this **backend responsibility** or **LLM responsibility**?
+2. Does it break the one rule?
+3. Does it break offline?
+
+If yes to any — push back and correct it.

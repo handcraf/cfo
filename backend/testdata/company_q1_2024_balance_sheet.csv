@@ -1,0 +1,25 @@
+Metric,Amount,Category
+Cash and Cash Equivalents,4800000,Current Assets
+Accounts Receivable,2100000,Current Assets
+Inventory,1500000,Current Assets
+Prepaid Expenses,300000,Current Assets
+Total Current Assets,8700000,Current Assets
+Property Plant Equipment,5200000,Fixed Assets
+Accumulated Depreciation,-1200000,Fixed Assets
+Net PPE,4000000,Fixed Assets
+Intangible Assets,800000,Fixed Assets
+Goodwill,1500000,Fixed Assets
+Total Assets,15000000,Total
+Accounts Payable,1200000,Current Liabilities
+Accrued Expenses,600000,Current Liabilities
+Short Term Debt,500000,Current Liabilities
+Current Portion Long Term Debt,400000,Current Liabilities
+Total Current Liabilities,2700000,Current Liabilities
+Long Term Debt,3000000,Long Term Liabilities
+Deferred Tax Liability,300000,Long Term Liabilities
+Total Liabilities,6000000,Total Liabilities
+Common Stock,2000000,Equity
+Retained Earnings,7000000,Equity
+Total Equity,9000000,Equity
+Total Liabilities and Equity,15000000,Verification
+

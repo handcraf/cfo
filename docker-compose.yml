@@ -1,0 +1,84 @@
+version: '3.8'
+
+# AI CFO — fully local stack.
+#
+# LLM runtime: llama.cpp + Gemma GGUF (NOT Ollama). The backend shells
+# out to a compiled llama.cpp binary. Both must be mounted into the
+# container from the host at the paths below.
+#
+# Required on the host before `docker compose up`:
+#   1. Clone + build llama.cpp:
+#        git clone https://github.com/ggerganov/llama.cpp && cd llama.cpp && make
+#   2. Drop a Gemma GGUF model at backend/models/gemma.gguf
+#      (see run.md for the recommended download + quantization).
+#
+# TODO: Bake llama.cpp into the backend Docker image so the host build
+# step is not required. Deferred until we pick a vendored version.
+
+services:
+  # Backend - Go API + local llama.cpp runtime
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cfo-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend/data:/app/data
+      # Mount the GGUF model file(s) read-only. The host path MUST exist.
+      - ./backend/models:/app/models:ro
+      # Mount a prebuilt llama.cpp tree so the `main` binary is reachable.
+      # Must have been built on a compatible arch (linux/amd64 for most CI).
+      - ./llama.cpp:/app/llama.cpp:ro
+    environment:
+      - PORT=8080
+      - DATA_DIR=/app/data
+      # --- LLM runtime (llama.cpp + Gemma) ---
+      - LLAMA_CPP_BINARY=/app/llama.cpp/main
+      - MODEL_PATH=/app/models/gemma.gguf
+      - MODEL_NAME=gemma
+      - LLM_MAX_TOKENS=512
+      - LLM_TEMPERATURE=0.2
+      - LLM_TOP_P=0.9
+      - LLM_SEED=42
+      - LLM_CONTEXT_SIZE=4096
+      - LLM_TIMEOUT_SEC=120
+      # --- Stage 3 storage controls ---
+      - SQLITE_ENABLED=true
+      - SQLITE_PATH=/app/data/state/cfo.db
+      - VECTOR_BACKEND=memory
+      - QDRANT_URL=http://qdrant:6333
+      - QDRANT_COLLECTION=cfo_chunks
+      - EMBEDDING_DIM=768
+    restart: unless-stopped
+
+  # Qdrant - Vector database (OPTIONAL).
+  # Enable with: `docker compose --profile qdrant up`
+  # Also flip VECTOR_BACKEND=qdrant on the backend service when bringing
+  # this up.
+  qdrant:
+    image: qdrant/qdrant:v1.11.3
+    container_name: cfo-qdrant
+    profiles: ["qdrant"]
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+
+  # Frontend - React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cfo-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  qdrant_data:

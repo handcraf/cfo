@@ -1,0 +1,20 @@
+Metric,Amount,Category
+Net Income,4605000,Operating Activities
+Depreciation and Amortization,350000,Operating Activities
+Changes in Accounts Receivable,-300000,Operating Activities
+Changes in Inventory,200000,Operating Activities
+Changes in Accounts Payable,200000,Operating Activities
+Changes in Accrued Expenses,100000,Operating Activities
+Cash from Operating Activities,5155000,Operating Activities
+Purchase of Equipment,-600000,Investing Activities
+Purchase of Intangibles,-100000,Investing Activities
+Proceeds from Asset Sales,50000,Investing Activities
+Cash from Investing Activities,-650000,Investing Activities
+Repayment of Short Term Debt,-200000,Financing Activities
+Repayment of Long Term Debt,-400000,Financing Activities
+Dividends Paid,-2000000,Financing Activities
+Cash from Financing Activities,-2600000,Financing Activities
+Net Change in Cash,1905000,Summary
+Beginning Cash Balance,4295000,Summary
+Ending Cash Balance,6200000,Summary
+

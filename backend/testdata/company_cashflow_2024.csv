@@ -1,0 +1,20 @@
+Metric,Value,Notes
+Net Income,576000,From P&L statement
+Depreciation,165000,Non-cash expense add back
+Changes in Accounts Receivable,-150000,Increase in receivables
+Changes in Inventory,-50000,Inventory build up
+Changes in Accounts Payable,80000,Increased vendor credit
+Cash from Operations,621000,Operating cash flow
+Capital Expenditures,-250000,Equipment purchases
+Acquisitions,0,No acquisitions
+Investments,-50000,Strategic investments
+Cash from Investing,-300000,Investment activities
+Debt Repayment,-100000,Loan principal
+Dividends Paid,-50000,Shareholder distributions
+Stock Issuance,0,No new equity
+Cash from Financing,-150000,Financing activities
+Net Change in Cash,171000,Total cash change
+Beginning Cash,1329000,Start of year
+Ending Cash,1500000,End of year balance
+Free Cash Flow,371000,Operations minus CapEx
+

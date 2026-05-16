@@ -1,0 +1,18 @@
+Metric,Value,Notes
+Monthly Revenue,1033333,Average monthly revenue
+Monthly Expenses,750000,Average monthly spend
+Monthly Burn Rate,-283333,Negative means profitable
+Cash Position,1500000,Current cash balance
+Runway Months,999,Profitable - infinite runway
+Customer Count,2500,Active paying customers
+Average Revenue Per User,413,ARPU
+Customer Acquisition Cost,150,CAC
+Lifetime Value,2478,LTV
+LTV to CAC Ratio,16.5,Healthy ratio
+Monthly Recurring Revenue,850000,MRR
+Annual Recurring Revenue,10200000,ARR
+Churn Rate,2.5,Monthly churn percentage
+Net Revenue Retention,115,NRR percentage
+Gross Margin,61.3,Gross margin percentage
+Operating Margin,10.6,Operating margin percentage
+

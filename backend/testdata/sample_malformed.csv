@@ -1,0 +1,9 @@
+Metric,Value
+Revenue,1000000
+This line has no comma and should be skipped
+Expenses,800000
+Another bad line
+Cash,500000
+,Empty metric
+Net Income,200000
+

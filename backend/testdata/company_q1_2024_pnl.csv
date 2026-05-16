@@ -1,0 +1,13 @@
+Metric,Value,Notes
+Revenue,2500000,Q1 2024 Total Revenue
+Cost of Goods Sold,1000000,Direct costs
+Gross Profit,1500000,Revenue minus COGS
+Operating Expenses,800000,Salaries and overhead
+Marketing Expenses,150000,Digital and traditional
+R&D Expenses,200000,Product development
+Administrative Expenses,100000,Office and legal
+EBITDA,250000,Earnings before interest taxes depreciation
+Depreciation,50000,Asset depreciation
+Interest Expense,25000,Loan interest
+Income Tax,43750,25% tax rate
+Net Income,131250,Bottom line profit

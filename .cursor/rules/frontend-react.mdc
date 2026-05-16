@@ -1,0 +1,35 @@
+---
+description: React frontend conventions for AI CFO
+globs: frontend/**/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+
+# Frontend (React) Conventions
+
+## Role of the UI
+The frontend is a **thin client** over the Go backend. No financial logic runs here. If you're tempted to compute a metric in JS — stop. Add a backend endpoint.
+
+## Data Flow
+- All numbers come from the backend, already computed and labeled with period.
+- The UI renders: question → computed facts + LLM explanation + evidence chunks.
+- Evidence chunks must be visibly attributable (source file + chunk id) — this is an auditable product.
+
+## Components
+- Functional components + hooks. No class components.
+- Extract custom hooks for backend calls (`useAsk`, `useCompany`, `useUpload`).
+- Colocate component + styles + tests.
+
+## State
+- Local state for UI concerns. Lift only when shared.
+- No global store unless justified — this app is mostly request/response.
+
+## Offline / On-Prem
+- No third-party analytics, no Sentry, no Google Fonts CDN.
+- Bundle all assets. Everything served from the same Docker image.
+- No calls to anything but the local backend.
+
+## Error UX
+When the backend returns computed facts but the LLM explanation failed, still show the numbers. Never hide facts because prose is missing.
+
+## Uploads
+Uploads go straight to the backend. The UI does not parse documents — parsing is in `backend/internal/service/document_parser.go`.
